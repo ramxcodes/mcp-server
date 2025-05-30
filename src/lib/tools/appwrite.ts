@@ -6,12 +6,6 @@ const APPWRITE_PROJECT_ID = process.env.APPWRITE_PROJECT_ID;
 const APPWRITE_API_KEY = process.env.APPWRITE_API_KEY;
 const DATABASE_ID = process.env.DATABASE_ID;
 
-console.log("Appwrite Environment Variables:");
-console.log("APPWRITE_ENDPOINT:", APPWRITE_ENDPOINT);
-console.log("APPWRITE_PROJECT_ID:", APPWRITE_PROJECT_ID);
-console.log("APPWRITE_API_KEY:", APPWRITE_API_KEY ? "***SET***" : "NOT SET");
-console.log("DATABASE_ID:", DATABASE_ID);
-
 const client = new Client();
 
 if (APPWRITE_ENDPOINT && APPWRITE_PROJECT_ID && APPWRITE_API_KEY) {
@@ -169,6 +163,396 @@ export const appwriteTools = {
         };
       } catch (error) {
         console.error("Error listing documents:", error);
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  success: false,
+                  error:
+                    error instanceof Error
+                      ? error.message
+                      : "Unknown error occurred",
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      }
+    },
+  },
+
+  createDocument: {
+    name: "createDocument",
+    description: "Create a new document in the Appwrite database",
+    schema: {
+      company_name: z.string().describe("The name of the company"),
+      company_id: z.string().describe("The unique identifier for the company"),
+      documentId: z
+        .string()
+        .optional()
+        .describe(
+          "Optional custom document ID (auto-generated if not provided)"
+        ),
+      collectionId: z
+        .string()
+        .optional()
+        .describe("The collection ID (defaults to 'company_names')"),
+    },
+    handler: async ({
+      company_name,
+      company_id,
+      documentId,
+      collectionId = "company_names",
+    }: {
+      company_name: string;
+      company_id: string;
+      documentId?: string;
+      collectionId?: string;
+    }) => {
+      try {
+        if (!DATABASE_ID) {
+          throw new Error("DATABASE_ID environment variable is not set");
+        }
+
+        console.log(
+          `Creating document in collection: ${collectionId} with data:`,
+          { company_name, company_id }
+        );
+
+        const document = await databases.createDocument(
+          DATABASE_ID,
+          collectionId,
+          documentId || "unique()", // Use provided ID or auto-generate
+          {
+            company_name,
+            company_id,
+          }
+        );
+
+        console.log("Document created successfully:", document);
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  success: true,
+                  message: "Document created successfully",
+                  document: {
+                    id: document.$id,
+                    createdAt: document.$createdAt,
+                    updatedAt: document.$updatedAt,
+                    company_name: document.company_name,
+                    company_id: document.company_id,
+                  },
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      } catch (error) {
+        console.error("Error creating document:", error);
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  success: false,
+                  error:
+                    error instanceof Error
+                      ? error.message
+                      : "Unknown error occurred",
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      }
+    },
+  },
+
+  updateDocument: {
+    name: "updateDocument",
+    description: "Update an existing document in the Appwrite database",
+    schema: {
+      documentId: z
+        .string()
+        .describe("The unique ID of the document to update"),
+      company_name: z
+        .string()
+        .optional()
+        .describe("The name of the company (optional)"),
+      company_id: z
+        .string()
+        .optional()
+        .describe("The unique identifier for the company (optional)"),
+      collectionId: z
+        .string()
+        .optional()
+        .describe("The collection ID (defaults to 'company_names')"),
+    },
+    handler: async ({
+      documentId,
+      company_name,
+      company_id,
+      collectionId = "company_names",
+    }: {
+      documentId: string;
+      company_name?: string;
+      company_id?: string;
+      collectionId?: string;
+    }) => {
+      try {
+        if (!DATABASE_ID) {
+          throw new Error("DATABASE_ID environment variable is not set");
+        }
+
+        // Build update data object with only provided fields
+        const updateData: Record<string, string> = {};
+        if (company_name !== undefined) updateData.company_name = company_name;
+        if (company_id !== undefined) updateData.company_id = company_id;
+
+        if (Object.keys(updateData).length === 0) {
+          throw new Error("At least one field must be provided for update");
+        }
+
+        console.log(
+          `Updating document with ID: ${documentId} in collection: ${collectionId} with data:`,
+          updateData
+        );
+
+        const document = await databases.updateDocument(
+          DATABASE_ID,
+          collectionId,
+          documentId,
+          updateData
+        );
+
+        console.log("Document updated successfully:", document);
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  success: true,
+                  message: "Document updated successfully",
+                  document: {
+                    id: document.$id,
+                    createdAt: document.$createdAt,
+                    updatedAt: document.$updatedAt,
+                    company_name: document.company_name,
+                    company_id: document.company_id,
+                  },
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      } catch (error) {
+        console.error("Error updating document:", error);
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  success: false,
+                  error:
+                    error instanceof Error
+                      ? error.message
+                      : "Unknown error occurred",
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      }
+    },
+  },
+
+  deleteDocument: {
+    name: "deleteDocument",
+    description: "Delete a document from the Appwrite database",
+    schema: {
+      documentId: z
+        .string()
+        .describe("The unique ID of the document to delete"),
+      collectionId: z
+        .string()
+        .optional()
+        .describe("The collection ID (defaults to 'company_names')"),
+    },
+    handler: async ({
+      documentId,
+      collectionId = "company_names",
+    }: {
+      documentId: string;
+      collectionId?: string;
+    }) => {
+      try {
+        if (!DATABASE_ID) {
+          throw new Error("DATABASE_ID environment variable is not set");
+        }
+
+        console.log(
+          `Deleting document with ID: ${documentId} from collection: ${collectionId}`
+        );
+
+        await databases.deleteDocument(DATABASE_ID, collectionId, documentId);
+
+        console.log("Document deleted successfully");
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  success: true,
+                  message: "Document deleted successfully",
+                  deletedDocumentId: documentId,
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      } catch (error) {
+        console.error("Error deleting document:", error);
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  success: false,
+                  error:
+                    error instanceof Error
+                      ? error.message
+                      : "Unknown error occurred",
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      }
+    },
+  },
+
+  upsertDocument: {
+    name: "upsertDocument",
+    description:
+      "Create or update a document in the Appwrite database (upsert operation)",
+    schema: {
+      documentId: z
+        .string()
+        .describe("The unique ID of the document to create or update"),
+      company_name: z.string().describe("The name of the company"),
+      company_id: z.string().describe("The unique identifier for the company"),
+      collectionId: z
+        .string()
+        .optional()
+        .describe("The collection ID (defaults to 'company_names')"),
+    },
+    handler: async ({
+      documentId,
+      company_name,
+      company_id,
+      collectionId = "company_names",
+    }: {
+      documentId: string;
+      company_name: string;
+      company_id: string;
+      collectionId?: string;
+    }) => {
+      try {
+        if (!DATABASE_ID) {
+          throw new Error("DATABASE_ID environment variable is not set");
+        }
+
+        console.log(
+          `Attempting upsert for document with ID: ${documentId} in collection: ${collectionId}`
+        );
+
+        let document;
+        let operation = "";
+
+        try {
+          await databases.getDocument(DATABASE_ID, collectionId, documentId);
+
+          document = await databases.updateDocument(
+            DATABASE_ID,
+            collectionId,
+            documentId,
+            {
+              company_name,
+              company_id,
+            }
+          );
+          operation = "updated";
+          console.log("Document updated successfully:", document);
+        } catch {
+          document = await databases.createDocument(
+            DATABASE_ID,
+            collectionId,
+            documentId,
+            {
+              company_name,
+              company_id,
+            }
+          );
+          operation = "created";
+          console.log("Document created successfully:", document);
+        }
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  success: true,
+                  message: `Document ${operation} successfully`,
+                  operation,
+                  document: {
+                    id: document.$id,
+                    createdAt: document.$createdAt,
+                    updatedAt: document.$updatedAt,
+                    company_name: document.company_name,
+                    company_id: document.company_id,
+                  },
+                },
+                null,
+                2
+              ),
+            },
+          ],
+        };
+      } catch (error) {
+        console.error("Error during upsert operation:", error);
 
         return {
           content: [

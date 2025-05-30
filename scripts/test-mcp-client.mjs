@@ -24,11 +24,9 @@ async function main() {
 
   console.log("Connected", client.getServerCapabilities());
 
-  // List all available tools
   const tools = await client.listTools();
   console.log("Available tools:", tools);
 
-  // Test courseRecommender tool
   try {
     console.log("\n--- Testing courseRecommender tool ---");
     const courseResult = await client.callTool("courseRecommender", {
@@ -39,7 +37,18 @@ async function main() {
     console.error("Error testing courseRecommender:", error);
   }
 
-  // Test listDocuments tool
+  try {
+    console.log("\n--- Testing createDocument tool ---");
+    const createResult = await client.callTool("createDocument", {
+      company_name: "Test Company",
+      company_id: "TC001",
+      documentId: "test-doc-001",
+    });
+    console.log("Create document result:", createResult);
+  } catch (error) {
+    console.error("Error testing createDocument:", error);
+  }
+
   try {
     console.log("\n--- Testing listDocuments tool ---");
     const listResult = await client.callTool("listDocuments", {});
@@ -48,16 +57,50 @@ async function main() {
     console.error("Error testing listDocuments:", error);
   }
 
-  // Test getDocument tool (this will likely fail without a valid document ID, but we can see the error)
   try {
     console.log("\n--- Testing getDocument tool ---");
     const getResult = await client.callTool("getDocument", {
-      documentId: "test-document-id",
+      documentId: "test-doc-001",
     });
     console.log("Get document result:", getResult);
   } catch (error) {
     console.error("Error testing getDocument:", error);
   }
+
+  try {
+    console.log("\n--- Testing updateDocument tool ---");
+    const updateResult = await client.callTool("updateDocument", {
+      documentId: "test-doc-001",
+      company_name: "Updated Test Company",
+    });
+    console.log("Update document result:", updateResult);
+  } catch (error) {
+    console.error("Error testing updateDocument:", error);
+  }
+
+  try {
+    console.log("\n--- Testing upsertDocument tool ---");
+    const upsertResult = await client.callTool("upsertDocument", {
+      documentId: "test-doc-002",
+      company_name: "Upsert Test Company",
+      company_id: "UTC002",
+    });
+    console.log("Upsert document result:", upsertResult);
+  } catch (error) {
+    console.error("Error testing upsertDocument:", error);
+  }
+
+  try {
+    console.log("\n--- Testing deleteDocument tool ---");
+    const deleteResult = await client.callTool("deleteDocument", {
+      documentId: "test-doc-001",
+    });
+    console.log("Delete document result:", deleteResult);
+  } catch (error) {
+    console.error("Error testing deleteDocument:", error);
+  }
+
+  console.log("\n--- All tests completed ---");
 }
 
 main().catch(console.error);
