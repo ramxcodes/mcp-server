@@ -255,7 +255,7 @@ const handler = createMcpHandler(
           description: "List all documents from the companies collection",
         },
         createDocument: {
-          description: "Create a new document in the Appwrite database",
+          description: "Create a new document in the Appwrite database.",
         },
         updateDocument: {
           description: "Update an existing document in the Appwrite database",
