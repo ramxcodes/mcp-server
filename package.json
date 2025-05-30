@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "@vercel/mcp-adapter": "^0.7.3",
+    "next": "15.3.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.3.3"
+    "zod": "^3.25.42"
   },
   "devDependencies": {
     "typescript": "^5",
