@@ -20,6 +20,7 @@ if (APPWRITE_ENDPOINT && APPWRITE_PROJECT_ID && APPWRITE_API_KEY) {
 const databases = new Databases(client);
 
 export const appwriteTools = {
+  // Appwrite Get Document Tool
   getDocument: {
     name: "getDocument",
     description: "Get a document by its unique ID from the Appwrite database",
@@ -102,6 +103,7 @@ export const appwriteTools = {
     },
   },
 
+  // Appwrite List Documents Tool
   listDocuments: {
     name: "listDocuments",
     description: "List all documents from the companies collection",
@@ -186,6 +188,7 @@ export const appwriteTools = {
     },
   },
 
+  // Appwrite Create Document Tool
   createDocument: {
     name: "createDocument",
     description: "Create a new document in the Appwrite database",
@@ -285,6 +288,7 @@ export const appwriteTools = {
     },
   },
 
+  // Appwrite Update Document Tool
   updateDocument: {
     name: "updateDocument",
     description: "Update an existing document in the Appwrite database",
@@ -321,7 +325,6 @@ export const appwriteTools = {
           throw new Error("DATABASE_ID environment variable is not set");
         }
 
-        // Build update data object with only provided fields
         const updateData: Record<string, string | number> = {};
         if (company_name !== undefined) updateData.company_name = company_name;
         if (company_id !== undefined) updateData.company_id = company_id;
@@ -391,6 +394,7 @@ export const appwriteTools = {
     },
   },
 
+  // Appwrite Delete Document Tool
   deleteDocument: {
     name: "deleteDocument",
     description: "Delete a document from the Appwrite database",
@@ -464,6 +468,7 @@ export const appwriteTools = {
     },
   },
 
+  // Appwrite Upsert Document Tool
   upsertDocument: {
     name: "upsertDocument",
     description:
