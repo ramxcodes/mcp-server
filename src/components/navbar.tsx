@@ -114,7 +114,12 @@ export default function Navbar() {
             >
               <Button
                 className="relative bg-slate-800/50 hover:bg-slate-700/50 text-white border border-slate-600/50 hover:border-slate-500/50 shadow-lg overflow-hidden group"
-                onClick={() => window.open("https://github.com", "_blank")}
+                onClick={() =>
+                  window.open(
+                    "https://github.com/ramxcodes/mcp-server",
+                    "_blank"
+                  )
+                }
               >
                 <span className="relative z-10 flex items-center gap-2">
                   <Github className="w-4 h-4" />

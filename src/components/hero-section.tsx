@@ -93,7 +93,7 @@ export default function HeroSection() {
   }, [showTerminal]);
 
   return (
-    <section className="container mx-auto px-4 py-20 min-h-screen flex items-center">
+    <section className="container mx-auto px-4 py-20 min-h-screen flex items-center mt-10">
       <div className="grid lg:grid-cols-2 gap-16 items-center w-full">
         {/* Left side - Main content */}
         <motion.div
