@@ -41,7 +41,7 @@ async function main() {
     console.log("\n--- Testing createDocument tool ---");
     const createResult = await client.callTool("createDocument", {
       company_name: "Test Company",
-      company_id: "TC001",
+      company_id: 1001,
       documentId: "test-doc-001",
     });
     console.log("Create document result:", createResult);
@@ -72,6 +72,7 @@ async function main() {
     const updateResult = await client.callTool("updateDocument", {
       documentId: "test-doc-001",
       company_name: "Updated Test Company",
+      company_id: 1002,
     });
     console.log("Update document result:", updateResult);
   } catch (error) {
@@ -83,7 +84,7 @@ async function main() {
     const upsertResult = await client.callTool("upsertDocument", {
       documentId: "test-doc-002",
       company_name: "Upsert Test Company",
-      company_id: "UTC002",
+      company_id: 2002,
     });
     console.log("Upsert document result:", upsertResult);
   } catch (error) {

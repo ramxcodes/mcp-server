@@ -69,8 +69,8 @@ const handler = createMcpHandler(
       {
         company_name: z.string().describe("The name of the company"),
         company_id: z
-          .string()
-          .describe("The unique identifier for the company"),
+          .number()
+          .describe("The unique identifier for the company (integer)"),
         documentId: z
           .string()
           .optional()
@@ -104,9 +104,9 @@ const handler = createMcpHandler(
           .optional()
           .describe("The name of the company (optional)"),
         company_id: z
-          .string()
+          .number()
           .optional()
-          .describe("The unique identifier for the company (optional)"),
+          .describe("The unique identifier for the company (optional integer)"),
         collectionId: z
           .string()
           .optional()
@@ -151,8 +151,8 @@ const handler = createMcpHandler(
           .describe("The unique ID of the document to create or update"),
         company_name: z.string().describe("The name of the company"),
         company_id: z
-          .string()
-          .describe("The unique identifier for the company"),
+          .number()
+          .describe("The unique identifier for the company (integer)"),
         collectionId: z
           .string()
           .optional()

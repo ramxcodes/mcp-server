@@ -191,7 +191,9 @@ export const appwriteTools = {
     description: "Create a new document in the Appwrite database",
     schema: {
       company_name: z.string().describe("The name of the company"),
-      company_id: z.string().describe("The unique identifier for the company"),
+      company_id: z
+        .number()
+        .describe("The unique identifier for the company (integer)"),
       documentId: z
         .string()
         .optional()
@@ -210,7 +212,7 @@ export const appwriteTools = {
       collectionId = "company_names",
     }: {
       company_name: string;
-      company_id: string;
+      company_id: number;
       documentId?: string;
       collectionId?: string;
     }) => {
@@ -295,9 +297,9 @@ export const appwriteTools = {
         .optional()
         .describe("The name of the company (optional)"),
       company_id: z
-        .string()
+        .number()
         .optional()
-        .describe("The unique identifier for the company (optional)"),
+        .describe("The unique identifier for the company (optional integer)"),
       collectionId: z
         .string()
         .optional()
@@ -311,7 +313,7 @@ export const appwriteTools = {
     }: {
       documentId: string;
       company_name?: string;
-      company_id?: string;
+      company_id?: number;
       collectionId?: string;
     }) => {
       try {
@@ -320,7 +322,7 @@ export const appwriteTools = {
         }
 
         // Build update data object with only provided fields
-        const updateData: Record<string, string> = {};
+        const updateData: Record<string, string | number> = {};
         if (company_name !== undefined) updateData.company_name = company_name;
         if (company_id !== undefined) updateData.company_id = company_id;
 
@@ -471,7 +473,9 @@ export const appwriteTools = {
         .string()
         .describe("The unique ID of the document to create or update"),
       company_name: z.string().describe("The name of the company"),
-      company_id: z.string().describe("The unique identifier for the company"),
+      company_id: z
+        .number()
+        .describe("The unique identifier for the company (integer)"),
       collectionId: z
         .string()
         .optional()
@@ -485,7 +489,7 @@ export const appwriteTools = {
     }: {
       documentId: string;
       company_name: string;
-      company_id: string;
+      company_id: number;
       collectionId?: string;
     }) => {
       try {
